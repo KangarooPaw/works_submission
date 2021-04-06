@@ -21,7 +21,6 @@ LPDIRECT3DTEXTURE9 COperation::m_pTexture = NULL;
 COperation::COperation()
 {
 	m_pScene2D = NULL;
-	m_TexPos = 0;
 }
 
 //=============================================================================

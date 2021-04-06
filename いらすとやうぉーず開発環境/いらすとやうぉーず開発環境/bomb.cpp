@@ -94,6 +94,7 @@ void CBomb::Update(void)
 	//マウスの取得
 	CInputMouse *pInputMouse = CManager::GetInputMouse();
 	D3DXVECTOR3 pos = GetPosition();
+	//右クリックで実行、生成されている敵を全消去
 	if (pInputMouse->GetMouseTriggerRight())
 	{
 		if (m_bUse == false)

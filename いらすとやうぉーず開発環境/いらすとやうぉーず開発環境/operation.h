@@ -1,7 +1,19 @@
+//--------------------------
+//操作説明描画処理[operation.h]
+//--------------------------
 #ifndef _OPERATION_H_
 #define _OPERATION_H_
+
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "renderer.h"
+
+//--------------------------
+//前方宣言
+//--------------------------
 class CScene2D;
+
 class COperation
 {
 public:
@@ -18,6 +30,5 @@ public:
 private:
 	static LPDIRECT3DTEXTURE9 m_pTexture;		//テクスチャ変数
 	CScene2D *m_pScene2D;
-	float m_TexPos;
 };
 #endif // !_OPERATION_H_

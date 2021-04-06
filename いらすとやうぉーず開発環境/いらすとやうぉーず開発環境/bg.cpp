@@ -21,7 +21,6 @@ LPDIRECT3DTEXTURE9 CBg::m_pTexture = NULL;
 CBg::CBg(int nPriority)
 {
 	m_pScene2D = NULL;
-	m_TexPos = 0;
 }
 
 //=============================================================================

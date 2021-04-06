@@ -1,6 +1,12 @@
+//--------------------------
+//処理[explosion.h]
+//--------------------------
 #ifndef _EXPLOSION_H_
 #define _EXPLOSION_H_
 
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "scene2d.h"
 
 class CExplosion :public CScene2D

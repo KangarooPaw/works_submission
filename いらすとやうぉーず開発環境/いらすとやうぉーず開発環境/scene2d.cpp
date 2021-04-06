@@ -18,7 +18,7 @@ CScene2D::CScene2D()
 	m_PolygonWidth = 0;
 	m_PolygonHeight = 0;
 	m_Alpha = 255;
-	m_EnemyColor = 255;
+	m_Color = 255;
 	m_angleX = 1.0f;
 	m_angleY = 1.0f;
 }
@@ -56,8 +56,6 @@ HRESULT CScene2D::Init(float nPosX, float nPosY, int nPolygonWidth, int nPolygon
 	m_PolygonHeight = nPolygonHeight;
 	m_PolygonWidth = nPolygonWidth;
 
-	// 読み込むメモリー
-
 	// 頂点バッファの生成
 	if (FAILED(pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * NUM_VERTEX * MAX_POLYGON,	// 頂点データ用に確保するバッファサイズ(バイト単位)
 		D3DUSAGE_WRITEONLY,			// 頂点バッファの使用法　
@@ -74,8 +72,6 @@ HRESULT CScene2D::Init(float nPosX, float nPosY, int nPolygonWidth, int nPolygon
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-
 
 	// 頂点座標の設定
 	pVtx[0].pos.x = m_pos.x - (m_PolygonWidth /2);
@@ -100,10 +96,10 @@ HRESULT CScene2D::Init(float nPosX, float nPosY, int nPolygonWidth, int nPolygon
 	pVtx[2].rhw = 1.0f;
 	pVtx[3].rhw = 1.0f;        
 	// 頂点カラーの設定
-	pVtx[0].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor,m_Alpha);
-	pVtx[1].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor,m_Alpha);
-	pVtx[2].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor,m_Alpha);
-	pVtx[3].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor,m_Alpha);
+	pVtx[0].col = D3DCOLOR_RGBA(255, m_Color, m_Color,m_Alpha);
+	pVtx[1].col = D3DCOLOR_RGBA(255, m_Color, m_Color,m_Alpha);
+	pVtx[2].col = D3DCOLOR_RGBA(255, m_Color, m_Color,m_Alpha);
+	pVtx[3].col = D3DCOLOR_RGBA(255, m_Color, m_Color,m_Alpha);
 
 	//テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -168,12 +164,10 @@ void CScene2D::Update(void)
 	pVtx[3].rhw = 1.0f;
 
 	// 頂点カラーの設定
-	pVtx[0].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor, m_Alpha);
-	pVtx[1].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor, m_Alpha);
-	pVtx[2].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor, m_Alpha);
-	pVtx[3].col = D3DCOLOR_RGBA(255, m_EnemyColor, m_EnemyColor, m_Alpha);
-
-
+	pVtx[0].col = D3DCOLOR_RGBA(255, m_Color, m_Color, m_Alpha);
+	pVtx[1].col = D3DCOLOR_RGBA(255, m_Color, m_Color, m_Alpha);
+	pVtx[2].col = D3DCOLOR_RGBA(255, m_Color, m_Color, m_Alpha);
+	pVtx[3].col = D3DCOLOR_RGBA(255, m_Color, m_Color, m_Alpha);
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
@@ -240,7 +234,7 @@ void CScene2D::SetAlpha(int alpha)
 //=============================================================================
 void CScene2D::SetColor(int col)
 {
-	m_EnemyColor = col;
+	m_Color = col;
 }
 
 //=============================================================

@@ -21,7 +21,6 @@ LPDIRECT3DTEXTURE9 CResult::m_pTexture = NULL;
 CResult::CResult(int nPriority)
 {
 	m_pScene2D = NULL;
-	m_TexPos = 0;
 }
 
 //=============================================================================

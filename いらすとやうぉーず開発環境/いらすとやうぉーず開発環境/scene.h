@@ -1,6 +1,14 @@
+//--------------------------
+//シーン処理[scene.h]
+//--------------------------
 #ifndef _SCENE_H_
 #define _SCENE_H_
+
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "main.h"
+
 //オブジェクトクラス
 class CScene
 {
@@ -38,7 +46,7 @@ protected:
 
 private:
 	OBJTYPE m_objType;							//オブジェクトの種類
-	static CScene *m_apScene[PRIORITY][MAX_POLYGON];		//
+	static CScene *m_apScene[PRIORITY][MAX_POLYGON];
 	static int m_nNumAll;
 	int m_nPriority;
 	int m_nID;

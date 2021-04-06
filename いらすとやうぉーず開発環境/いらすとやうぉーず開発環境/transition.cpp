@@ -78,6 +78,7 @@ HRESULT CTransition::Init(float nPosX, float nPosY, int nPolygonWidth, int nPoly
 	m_pScene2D = new CScene2D;
 	m_pScene2D->Init(nPosX, nPosY, nPolygonWidth, nPolygonHeight);
 	m_pScene2D->BindTexture(m_pTexture);
+	m_pScene2D->SetColor(0);
 
 	return S_OK;
 }

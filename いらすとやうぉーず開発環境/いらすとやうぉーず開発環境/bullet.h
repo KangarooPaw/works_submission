@@ -1,6 +1,12 @@
+//--------------------------
+//弾処理[bullet.h]
+//--------------------------
 #ifndef _BULLET_H_
 #define _BULLET_H_
 
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "scene2d.h"
 
 class CBullet:public CScene2D

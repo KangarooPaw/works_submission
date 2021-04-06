@@ -23,9 +23,7 @@ CManager::MODE CFade::m_mode = CManager::MODE_TITLE;
 CFade::CFade()
 {
 	m_pScene2D = NULL;
-	m_TexPos = 0;
 	m_nFade = 255;
-
 }
 
 //=============================================================================
@@ -149,7 +147,7 @@ void CFade::FadeIn(void)
 		m_nFade = 255;
 		m_fade = FADE_OUT;
 		CManager::SetMode(m_mode);
-	}	
+	}
 	m_pScene2D->SetAlpha(m_nFade);
 	m_pScene2D->Update();
 }

@@ -1,12 +1,10 @@
-//=============================================================================
-//
-// メイン処理 [main.h]
-// Author : 
-//
-//=============================================================================
+//--------------------------
+//メイン処理[main.h]
+//--------------------------
 #ifndef _MAIN_H_
 #define _MAIN_H_
 #define DIRECTINPUT_VERSION 0x0800
+
 //*****************************************************************************
 // ヘッダファイルのインクルード
 //*****************************************************************************
@@ -16,7 +14,6 @@
 #include <time.h>
 #include <stdio.h>
 
-
 //*****************************************************************************
 // ライブラリファイルのリンク
 //*****************************************************************************
@@ -25,7 +22,6 @@
 #pragma comment (lib, "dxguid.lib")
 #pragma comment (lib, "winmm.lib")
 #pragma comment(lib, "dinput8.lib")
-
 
 //*****************************************************************************
 // マクロ定義
@@ -47,28 +43,29 @@
 #define ENEMY_CONCURRENT (5)	//敵の同時生成
 
 #define	FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+
 //ポリゴンサイズ
-#define PLAYER_WIDTH	 (50)
+#define PLAYER_WIDTH	 (50)			//player
 #define PLAYER_HEIGHT	 (50)
-#define FENCE_WIDTH		 (60)
+#define FENCE_WIDTH		 (60)			//fence
 #define FENCE_HEIGHT	 (200)
-#define ENEMY_WIDTH		 (50)
+#define ENEMY_WIDTH		 (50)			//enemy
 #define ENEMY_HEIGHT	 (50)
-#define BG_WIDTH		 (SCREEN_WIDTH)
+#define BG_WIDTH		 (SCREEN_WIDTH)	//bg
 #define BG_HEIGHT		 (SCREEN_HEIGHT)
-#define TRANSITION_WIDTH (1000)
+#define TRANSITION_WIDTH (1000)			//transition
 #define TRANSITION_HEIGHT (100)
-#define SCORE_WIDTH		 (25)
+#define SCORE_WIDTH		 (25)			//score
 #define SCORE_HEIGHT	 (25)
-#define NUMBER_WIDTH	 (25)
+#define NUMBER_WIDTH	 (25)			//number
 #define NUMBER_HEIGHT	 (25)
-#define EXPLOSION_WIDTH	 (25)
+#define EXPLOSION_WIDTH	 (25)			//explosion
 #define EXPLOSION_HEIGHT (25)
-#define	BULLET_WIDTH	 (25)
+#define	BULLET_WIDTH	 (25)			//bullet
 #define BULLET_HEIGHT	 (25)
-#define BOMB_WIDTH		 (150)
+#define BOMB_WIDTH		 (150)			//bomb
 #define BOMB_HEIGHT		 (150)
-#define RETICULE_WIDTH	 (100)
+#define RETICULE_WIDTH	 (100)			//reticule
 #define RETICULE_HEIGHT	 (100)
 
 //テクスチャ

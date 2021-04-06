@@ -1,10 +1,16 @@
- #ifndef	_INPUTMOUSE_H_
-#define _INPUTMOUSE_H_
+//--------------------------
+//マウス処理[mouse.h]
+//--------------------------
+#ifndef	_MOUSE_H_
+#define _MOUSE_H_
 
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "input.h"
 
-
-class CInputMouse : public CInput {
+class CInputMouse : public CInput 
+{
 public:
 	typedef struct _MSTATE {
 		RECT    moveRect;     // 画面上で動ける範囲

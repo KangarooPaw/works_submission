@@ -1,7 +1,15 @@
+//--------------------------
+//処理[keyboard.h]
+//--------------------------
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
+
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "main.h"
 #include "input.h"
+
 #define NUM_KEY_MAX (256)//キーボードの最大数
 
 class CInputKeyboard :public CInput

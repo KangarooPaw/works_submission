@@ -1,7 +1,16 @@
+//--------------------------
+//タイトル処理[title.h]
+//--------------------------
 #ifndef _TITLE_H_
 #define _TITLE_H_
+
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "renderer.h"
+
 class CScene2D;
+
 class CTitle
 {
 public:
@@ -18,6 +27,5 @@ public:
 private:
 	static LPDIRECT3DTEXTURE9 m_pTexture;		//テクスチャ変数
 	CScene2D *m_pScene2D;
-	float m_TexPos;
 };
 #endif // !_TITLE_H_

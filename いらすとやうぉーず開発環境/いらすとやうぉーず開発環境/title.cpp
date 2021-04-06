@@ -21,7 +21,6 @@ LPDIRECT3DTEXTURE9 CTitle::m_pTexture = NULL;
 CTitle::CTitle()
 {
 	m_pScene2D = NULL;
-	m_TexPos = 0;
 }
 
 //=============================================================================

@@ -135,6 +135,12 @@ void CPlayer::Update(void)
 
 	SetPosition(pos);
 	CScene2D::SetRotVertex(PLAYER_WIDTH,PLAYER_HEIGHT,(float)angle);
+	if (point.x < SCREEN_CENTER_X)
+	{
+		CScene2D::SetRotVertex(PLAYER_WIDTH, -PLAYER_HEIGHT, (float)angle);
+	}
+
+	//“–‚½‚è”»’èˆ—
 	for (int nCountpriority = 0; nCountpriority < PRIORITY; nCountpriority++)
 	{
 		for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)

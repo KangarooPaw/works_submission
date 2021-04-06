@@ -1,10 +1,19 @@
+//--------------------------
+//シーン2D処理[scene2d.h]
+//--------------------------
 #ifndef _SCENE2D_H_
 #define _SCENE2D_H_
 
+//--------------------------
+//インクルードファイル
+//--------------------------
 #include "main.h"
 #include "scene.h"
 #include "manager.h"
 
+//--------------------------
+//前方宣言
+//--------------------------
 class CManager;
 
 class CScene2D :public CScene
@@ -31,11 +40,11 @@ private:
 	LPDIRECT3DTEXTURE9		m_pTexture = NULL;		// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = NULL;		// 頂点バッファへのポインタ
 	D3DXVECTOR3				m_pos;					// ポリゴンの位置
-	int						m_PolygonWidth;
-	int						m_PolygonHeight;
-	int 					m_Alpha;
-	int						m_EnemyColor;
-	float					m_angleX, m_angleY;
+	int						m_PolygonWidth;			// ポリゴンの幅
+	int						m_PolygonHeight;		// ポリゴンの高さ
+	int 					m_Alpha;				// アルファ値
+	int						m_Color;				// カラー値
+	float					m_angleX, m_angleY;		// 角度
 };
 
 #endif // !_SCENE2D_H_
