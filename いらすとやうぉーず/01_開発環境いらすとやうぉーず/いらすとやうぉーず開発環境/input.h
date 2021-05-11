@@ -9,17 +9,20 @@
 //--------------------------
 #include "main.h"
 
+//--------------------------
+//クラス
+//--------------------------
 class CInput
 {
 public:
-	CInput();
-	virtual ~CInput();
-	virtual HRESULT Init(HINSTANCE hInstance,HWND hWnd);
-	virtual void Uninit(void);
-	virtual void Update(void) = 0;
-protected:
-	static LPDIRECTINPUT8 m_pInput;
-	LPDIRECTINPUTDEVICE8 m_pInputDevice;
+	CInput();//コンストラクタ
+	virtual ~CInput();//デストラクタ
 
+	virtual HRESULT Init(HINSTANCE hInstance,HWND hWnd);//初期化処理
+	virtual void Uninit(void);//終了処理
+	virtual void Update(void) = 0;//更新処理
+protected:
+	static LPDIRECTINPUT8 m_pInput;//インプットのポインタ
+	LPDIRECTINPUTDEVICE8 m_pInputDevice;//インプットデバイスのポインタ
 };
 #endif // !_INPUT_H_

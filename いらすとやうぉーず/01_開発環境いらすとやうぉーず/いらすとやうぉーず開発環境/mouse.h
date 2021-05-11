@@ -9,6 +9,9 @@
 //--------------------------
 #include "input.h"
 
+//--------------------------
+//クラス
+//--------------------------
 class CInputMouse : public CInput 
 {
 public:
@@ -25,11 +28,11 @@ public:
 		int     imgHeight;    // マウス画像高さ
 	} MSTATE;
 
-	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
-	void Uninit(void);
-	void Update(void);
+	HRESULT Init(HINSTANCE hInstance, HWND hWnd);//初期化処理
+	void Uninit(void);//終了処理
+	void Update(void);//更新処理
 
-	static MSTATE *GetMouse(void);
+	static MSTATE *GetMouse(void);//マウス取得
 	//左クリック
 	bool GetMouseTriggerLeft(void);
 	bool GetMousePressLeft(void);

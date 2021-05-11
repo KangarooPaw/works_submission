@@ -153,8 +153,8 @@
     <ClInclude Include="explosion.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="fence.h" />
+    <ClInclude Include="hiscore.h" />
     <ClInclude Include="input.h" />
-    <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="mouse.h" />
@@ -179,8 +179,8 @@
     <ClCompile Include="explosion.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fence.cpp" />
+    <ClCompile Include="hiscore.cpp" />
     <ClCompile Include="input.cpp" />
-    <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="mouse.cpp" />

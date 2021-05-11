@@ -87,6 +87,7 @@ HRESULT CEnemy::Init(float nPosX, float nPosY)
 	{
 		CScene2D::SetEnemyTex(0.0f, 1.0f, 0.0f, 1.0f);
 	}
+	//オブジェクトタイプを設定
 	SetObjType(OBJTYPE_ENEMY);
 	return S_OK;
 }
@@ -104,11 +105,14 @@ void CEnemy::Uninit(void)
 //-------------------------------------------
 void CEnemy::Update(void)
 {
+	//位置を取得
 	D3DXVECTOR3 pos=GetPosition();
 	//画面中央に向かって進む
 	double angle = atan2(double(SCREEN_CENTER_Y -pos.y ), double(SCREEN_CENTER_X -pos.x ));
+	//進行方向計算
 	pos.x +=(float)cos(angle)*m_move;
 	pos.y += (float)sin(angle)*m_move;
+	//位置をセット
 	SetPosition(pos);
 	CScene2D::Update();
 }
@@ -132,27 +136,26 @@ void CEnemy::HitBullet(void)
 	//1度目のヒット判定
 	CScene2D::SetColor(0);
 	//体力がなくなったら
-	if (m_nLife <= 0)
-	{
-		for (int nCountPriority = 0; nCountPriority < PRIORITY; nCountPriority++)
-		{
-			for (int nCountScene = 0; nCountScene < MAX_POLYGON; nCountScene++)
-			{
-				CScene2D *pScene2D = (CScene2D*)GetScene(nCountPriority, nCountScene);
-				if (pScene2D != NULL)
-				{
-					if (pScene2D->GetObjType() == CScore::OBJTYPE_SCORE)
-					{
-						//スコア+1
-						((CScore*)pScene2D)->AddScore(1);
-					}
+	if (m_nLife > 0)return;
 
-				}
-			}
+	for (int nCountPriority = 0; nCountPriority < PRIORITY; nCountPriority++)
+	{
+		for (int nCountScene = 0; nCountScene < MAX_POLYGON; nCountScene++)
+		{
+			//Scene2Dの取得
+			CScene2D *pScene2D = (CScene2D*)GetScene(nCountPriority, nCountScene);
+			//pScene2DがNULLならコンティニュー
+			if (pScene2D == NULL)continue;
+			//OBJTYPEがSCORE以外ならコンティニュー
+			if (pScene2D->GetObjType() != CScore::OBJTYPE_SCORE)continue;
+			//スコア+1
+			((CScore*)pScene2D)->AddScore(1);
 		}
-		pSound->Play(CSound::SE_EXPLOSION);
-		CScene2D::Uninit();
 	}
+	//SE再生
+	pSound->Play(CSound::SE_EXPLOSION);
+	//終了処理
+	CScene2D::Uninit();
 }
 
 //-------------------------------------------
@@ -160,7 +163,10 @@ void CEnemy::HitBullet(void)
 //-------------------------------------------
 void CEnemy::HitObject(void)
 {
+	//Soundを取得
 	CSound *pSound = CManager::GetSound();
+	//SEを再生
 	pSound->Play(CSound::SE_EXPLOSION);
+	//終了処理
 	Uninit();
 }

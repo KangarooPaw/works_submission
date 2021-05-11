@@ -91,7 +91,6 @@ void CBg::Uninit(void)
 		m_pScene2D->Uninit();
 		m_pScene2D = NULL;
 	}
-
 	Release();
 }
 

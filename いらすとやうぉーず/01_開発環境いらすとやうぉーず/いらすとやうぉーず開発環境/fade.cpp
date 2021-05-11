@@ -104,7 +104,6 @@ void CFade::Uninit(void)
 //=============================================================================
 void CFade::Update(void)
 {
-
 	if (m_fade != FADE_NONE)
 	{
 		if (m_fade == FADE_IN)
@@ -146,6 +145,7 @@ void CFade::FadeIn(void)
 	{
 		m_nFade = 255;
 		m_fade = FADE_OUT;
+		//ƒ‚[ƒh•ÏX
 		CManager::SetMode(m_mode);
 	}
 	m_pScene2D->SetAlpha(m_nFade);
@@ -162,7 +162,6 @@ void CFade::FadeOut(void)
 	{
 		m_nFade = 0;
 		m_fade = FADE_NONE;
-		
 	}
 	m_pScene2D->SetAlpha(m_nFade);
 	m_pScene2D->Update();

@@ -70,13 +70,9 @@ void CScene::ReleaseAll(void)
 		// ポリゴンの終了処理
 		for (int nCount = 0; nCount < MAX_POLYGON; nCount++)
 		{
-			if (m_apScene[nCountpriority][nCount] != NULL)
-			{
-				if (m_apScene[nCountpriority][nCount]->GetObjType() != OBJTYPE_FADE)
-				{
-					m_apScene[nCountpriority][nCount]->Uninit();
-				}
-			}
+			if (m_apScene[nCountpriority][nCount] == NULL)continue;
+			if (m_apScene[nCountpriority][nCount]->GetObjType() == OBJTYPE_FADE)continue;
+			m_apScene[nCountpriority][nCount]->Uninit();
 		}
 	}
 }
@@ -91,10 +87,8 @@ void CScene::UpdateAll(void)
 		// ポリゴンの更新処理
 		for (int nCount = 0; nCount < MAX_POLYGON; nCount++)
 		{
-			if (m_apScene[nCountpriority][nCount] != NULL)
-			{
-				m_apScene[nCountpriority][nCount]->Update();
-			}
+			if (m_apScene[nCountpriority][nCount] == NULL)continue;
+			m_apScene[nCountpriority][nCount]->Update();
 		}
 	}
 }
@@ -109,13 +103,9 @@ void CScene::DrawAll(void)
 		// ポリゴンの描画処理
 		for (int nCount = 0; nCount < MAX_POLYGON; nCount++)
 		{
-			if (m_apScene[nCountpriority][nCount] != NULL)
-			{
-				if (m_apScene[nCountpriority][nCount]->GetObjType() != OBJTYPE_FADE)
-				{
-					m_apScene[nCountpriority][nCount]->Draw();
-				}
-			}
+			if (m_apScene[nCountpriority][nCount] == NULL)continue;
+			if (m_apScene[nCountpriority][nCount]->GetObjType() == OBJTYPE_FADE)continue;
+			m_apScene[nCountpriority][nCount]->Draw();
 		}
 	}
 }

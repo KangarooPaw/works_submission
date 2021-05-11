@@ -85,9 +85,11 @@ HRESULT CResult::Init(float nPosX, float nPosY, int nPolygonWidth, int nPolygonH
 //=============================================================================
 void CResult::Uninit(void)
 {
-
+	if (m_pScene2D != NULL)
+	{
 		m_pScene2D->Uninit();
 		m_pScene2D = NULL;
+	}
 }
 
 //=============================================================================

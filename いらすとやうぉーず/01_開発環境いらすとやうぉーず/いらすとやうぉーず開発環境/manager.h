@@ -13,7 +13,6 @@
 //前方宣言
 //--------------------------
 class CRenderer;
-class CInputKeyboard;
 class CInputMouse;
 class CPlayer;
 class CSound;
@@ -23,70 +22,73 @@ class CResult;
 class CFade;
 class COperation;
 class CScore;
+class CHiscore;
 
-//マネージャークラス
+//--------------------------
+//クラス
+//--------------------------
 class CManager
 {
 public:
+	//モードの構造体
 	typedef enum
 	{
-		MODE_TITLE=0,
-		MODE_OPERATION,
-		MODE_GAME,
-		MODE_RESULT,
-		MODE_END
+		MODE_TITLE=0,		//タイトル
+		MODE_OPERATION,	//説明
+		MODE_GAME,			//ゲーム
+		MODE_RESULT,		//リザルト
+		MODE_END			//終了
 	}MODE;
 
-	CManager();
-	~CManager();
-	HRESULT Init(HINSTANCE hInstance,HWND hWnd, bool bWindouw);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	CManager();		//コンストラクタ
+	~CManager();	//デストラクタ
 
-	void LoadAll(void);
-	void UnloadAll(void);
-	CPlayer *GetPlayer(void);
+	HRESULT Init(HINSTANCE hInstance,HWND hWnd, bool bWindouw);//初期化処理
+	void Uninit(void);//終了処理
+	void Update(void);//更新処理
+	void Draw(void);//描画処理
 
-	static void SetMode(MODE mode);
-	static MODE GetMode(void);
+	void LoadAll(void);//テクスチャの読み込みまとめ
+	void UnloadAll(void);//テクスチャの破棄まとめ
+	CPlayer *GetPlayer(void);//プレイヤーの取得
 
-	static CRenderer *GetRenderer(void);
-	static CInputKeyboard *GetInputKeyboard(void);
-	static CInputMouse *GetInputMouse(void);
-	static CSound *GetSound(void);
-	static CFade *GetFade(void);
+	static void SetMode(MODE mode);//モードのセット
+	static MODE GetMode(void);//モードの取得
+
+	static CRenderer *GetRenderer(void);//レンダラーの取得
+	static CInputMouse *GetInputMouse(void);//マウスの取得
+	static CSound *GetSound(void);//サウンドの取得
+	static CFade *GetFade(void);//フェードの取得
 
 private:
+	//方向の構造体
 	typedef enum
 	{
-		DIRECTION_UP=0,
-		DIRECTION_DOWN,
-		DIRECTION_LEFT,
-		DIRECTION_RIGHT,
-		DIRECTION_MAX
+		DIRECTION_UP=0,//上
+		DIRECTION_DOWN,//下
+		DIRECTION_LEFT,//左
+		DIRECTION_RIGHT,//右
+		DIRECTION_MAX//最大値
 	}DIRECTION;
-	static CPlayer *m_pPlayer;
-	static CTransition *m_pTransition;
-	static CTitle *m_pTitle;
-	static CFade *m_pFade;
-	static COperation *m_pOperation;
-	static CResult *m_pResult;
-	static CRenderer *m_pRenderer;
-	static CInputKeyboard *m_pInputKeyboard;
-	static CInputMouse *m_pInputMouse;
-	static CScore *m_pScore;
-	static CSound *m_pSound;
-	static MODE m_mode;
-	int m_enemyPopTime;
-	int m_PopSpeed;
-	static int m_saveScore;
 
-	int nPosX;
-	int nPosY;			
+	//ポインタ
+	static CRenderer *m_pRenderer;//レンダラー
+	static CInputMouse *m_pInputMouse;//マウス
+	static MODE m_mode;//モード
+	static CFade *m_pFade;//フェード
+	static CTransition *m_pTransition;//遷移
+	static CTitle *m_pTitle;//タイトル
+	static COperation *m_pOperation;//説明
+	static CResult *m_pResult;//リザルト
+	static CPlayer *m_pPlayer;//プレイヤー
+	static CScore *m_pScore;//スコア
+	static CHiscore *m_pHiscore;//ハイスコア
+	static CSound *m_pSound;//サウンド
+
+	int m_enemyPopTime;//エネミー生成タイミング
+	int m_PopSpeed;//エネミー生成速度
+	static int m_saveScore;//スコア情報のセーブ
+
+	int nPosX,nPosY;//エネミー生成時の座標
 };	
-
-
-
-
 #endif // !_MANAGER_H_

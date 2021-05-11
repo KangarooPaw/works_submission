@@ -107,58 +107,72 @@ void CPlayer::Update(void)
 	//マウスカーソル位置取得
 	POINT point;
 	GetCursorPos(&point);
+	//ウィンドウ内のポインター判定
 	ScreenToClient(FindWindow(CLASS_NAME, NULL), &point);
 	//半径
 	double r = sqrtf((PLAYER_WIDTH / 2 ^ 2) + (PLAYER_HEIGHT / 2 ^ 2));
 	//角度計算
 	double angle = atan2(double(point.y - pos.y), double(point.x - pos.x));
-	
-	//弾の発射
+
 	if (pInputMouse->GetMouseTriggerLeft())
 	{
+		//SE再生
 		pSound->Play(CSound::SE_SHOT);
+		//弾生成
 		CBullet::Create(pos.x, pos.y);
 	}
+
 	if (pInputMouse->GetMousePressLeft())
 	{
+		//射撃タイム
 		m_bulletTime++;
+		//射撃
 		if (m_bulletTime % 10 == 0)
 		{
+			//SE再生
 			pSound->Play(CSound::SE_SHOT);
+			//弾生成
 			CBullet::Create(pos.x, pos.y);
 		}
 	}
+	//左クリックを話てリセット
 	if (pInputMouse->GetMouseReleaseLeft())
 	{
 		m_bulletTime = 0;
 	}
-
+	//位置セット
 	SetPosition(pos);
-	CScene2D::SetRotVertex(PLAYER_WIDTH,PLAYER_HEIGHT,(float)angle);
+	//プレイヤーの角度
+	CScene2D::SetRotVertex(PLAYER_WIDTH, PLAYER_HEIGHT, (float)angle);
+	//プレイヤー反転処理
 	if (point.x < SCREEN_CENTER_X)
 	{
 		CScene2D::SetRotVertex(PLAYER_WIDTH, -PLAYER_HEIGHT, (float)angle);
 	}
 
 	//当たり判定処理
-	for (int nCountpriority = 0; nCountpriority < PRIORITY; nCountpriority++)
+	for (int nCntPriority = 0; nCntPriority < PRIORITY; nCntPriority++)
 	{
 		for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
 		{
-			CScene2D *pScene2D = (CScene2D*)GetScene(nCountpriority, nCntScene);
-			if (pScene2D != NULL)
+			//Scene2Dの取得
+			CScene2D *pScene2D = (CScene2D*)GetScene(nCntPriority, nCntScene);
+			//pScene2DがNULLならコンティニュー
+			if (pScene2D == NULL)continue;
+			//OBJTYPEがエネミーならコンティニュー
+			if (pScene2D->GetObjType() != CEnemy::OBJTYPE_ENEMY)continue;
+
+			//エネミーの位置を取得
+			D3DXVECTOR3 posEnemy = pScene2D->GetPosition();
+			if (pos.x >= posEnemy.x - (ENEMY_WIDTH / 2) && pos.x <= posEnemy.x + (ENEMY_WIDTH / 2) &&
+				pos.y >= posEnemy.y - (ENEMY_HEIGHT / 2) && pos.y <= posEnemy.y + (ENEMY_HEIGHT / 2))
 			{
-				D3DXVECTOR3 posEnemy = pScene2D->GetPosition();
-				if (pScene2D->GetObjType() == CEnemy::OBJTYPE_ENEMY)
-				{
-					if (pos.x >= posEnemy.x - (ENEMY_WIDTH / 2) && pos.x <= posEnemy.x + (ENEMY_WIDTH / 2) &&
-						pos.y >= posEnemy.y - (ENEMY_HEIGHT / 2) && pos.y <= posEnemy.y + (ENEMY_HEIGHT / 2))
-					{
-						((CEnemy*)pScene2D)->HitObject();
-						Uninit();
-						CFade::SetFade(CManager::MODE_RESULT);
-					}
-				}
+				//エネミーのヒット処理
+				((CEnemy*)pScene2D)->HitObject();
+				//プレイヤーの終了処理
+				Uninit();
+				//画面遷移処理
+				CFade::SetFade(CManager::MODE_RESULT);
 			}
 		}
 	}

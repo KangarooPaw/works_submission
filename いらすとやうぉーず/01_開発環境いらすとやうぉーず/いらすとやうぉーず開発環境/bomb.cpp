@@ -29,6 +29,7 @@ CBomb::CBomb(int nPriority)
 //=============================================================================
 CBomb::~CBomb()
 {
+
 }
 
 //=============================================================================
@@ -93,33 +94,29 @@ void CBomb::Update(void)
 {
 	//マウスの取得
 	CInputMouse *pInputMouse = CManager::GetInputMouse();
-	D3DXVECTOR3 pos = GetPosition();
 	//右クリックで実行、生成されている敵を全消去
 	if (pInputMouse->GetMouseTriggerRight())
 	{
-		if (m_bUse == false)
+		for (int nCountpriority = 0; nCountpriority < PRIORITY; nCountpriority++)
 		{
-			for (int nCountpriority = 0; nCountpriority < PRIORITY; nCountpriority++)
+			for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
 			{
-				for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
+				//Scene2Dを取得
+				CScene2D *pScene2D = (CScene2D*)GetScene(nCountpriority, nCntScene);
+				//pScene2DがNULLならコンティニュー
+				if (pScene2D == NULL)continue;
+				//OBJTYPEがENEMY以外ならコンティニュー
+				if (pScene2D->GetObjType() != CEnemy::OBJTYPE_ENEMY)continue;	
+				for (int nCnt = 0; nCnt < ENEMY_LIFE; nCnt++)
 				{
-					CScene2D *pScene2D = (CScene2D*)GetScene(nCountpriority, nCntScene);
-					if (pScene2D != NULL)
-					{
-						D3DXVECTOR3 posEnemy = pScene2D->GetPosition();
-						if (pScene2D->GetObjType() == CEnemy::OBJTYPE_ENEMY)
-						{
-							for (int nCnt = 0; nCnt < ENEMY_LIFE; nCnt++)
-							{
-								((CEnemy*)pScene2D)->HitBullet();
-							}
-							m_bUse = true;
-						}
-					}
+					((CEnemy*)pScene2D)->HitBullet();
 				}
+				//一度使ったらtrue
+				m_bUse = true;
 			}
 		}
 	}
+	//一度使ったら終了
 	if (m_bUse == true)Uninit();
 }
 

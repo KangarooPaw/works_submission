@@ -10,7 +10,6 @@
 #include "scene.h"
 #include "scene2d.h"
 #include "input.h"
-#include "keyboard.h"
 #include "mouse.h"
 #include "player.h"
 #include "bullet.h"
@@ -19,6 +18,7 @@
 #include "enemy.h"
 #include "sound.h"
 #include "score.h"
+#include "hiscore.h"
 #include "number.h"
 #include "transition.h"
 #include "title.h"
@@ -33,7 +33,6 @@
 //スタティック変数初期化
 //=============================================================================
 CRenderer *CManager::m_pRenderer = NULL;
-CInputKeyboard *CManager::m_pInputKeyboard = NULL;
 CInputMouse *CManager::m_pInputMouse = NULL;
 CSound *CManager::m_pSound = NULL;
 CPlayer *CManager::m_pPlayer = NULL;
@@ -43,8 +42,10 @@ CTitle *CManager::m_pTitle=NULL;
 CResult *CManager::m_pResult=NULL;
 CFade *CManager::m_pFade = NULL;
 COperation *CManager::m_pOperation=NULL;
-CScore*CManager::m_pScore = NULL;	
+CScore*CManager::m_pScore = NULL;
+CHiscore*CManager::m_pHiscore = NULL;
 int CManager::m_saveScore = 0;
+
 //=============================================================================
 //コンストラクタ
 //=============================================================================
@@ -73,16 +74,18 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindouw)
 	//レンダリングクラス生成	// 初期化処理	
 	m_pRenderer = new CRenderer;
 	m_pRenderer->Init(hWnd, TRUE);
-	m_pInputKeyboard = new CInputKeyboard;
-	m_pInputKeyboard->Init(hInstance, hWnd);
+	//マウスクラス生成
 	m_pInputMouse = new CInputMouse;
 	m_pInputMouse->Init(hInstance, hWnd);
+	//サウンドクラス生成
 	m_pSound = new CSound;
 	m_pSound->Init(hWnd);
 
 	//TEXTUREのロード
 	LoadAll();
+	//フェードクラス生成
 	m_pFade = CFade::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+	//遷移
 	CFade::SetFade(m_mode);
 
 	return S_OK;
@@ -94,14 +97,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindouw)
 void CManager::Uninit(void)
 {
 	CScene::	ReleaseAll();
+	//TEXTUREの終了処理
 	UnloadAll();
-	//キーボードの終了
-	if (m_pInputKeyboard != NULL)
-	{
-		m_pInputKeyboard->Uninit();
-		delete m_pInputKeyboard;
-		m_pInputKeyboard = NULL;
-	}
+	//マウス終了処理
 	if (m_pInputMouse != NULL)
 	{
 		m_pInputMouse->Uninit();
@@ -122,10 +120,11 @@ void CManager::Uninit(void)
 //=============================================================================
 void CManager::Update(void)
 {
-	m_pInputKeyboard->Update();
+	//マウス
 	m_pInputMouse->Update();
+	//レンダラー
 	m_pRenderer->Update();
-
+	//遷移用文字更新
 	if (m_pTransition != NULL)
 	{
 		m_pTransition->Update();
@@ -134,11 +133,13 @@ void CManager::Update(void)
 	switch (m_mode)
 	{
 	case MODE_TITLE:
-
 		if (m_pInputMouse->GetMouseTriggerLeft())
 		{
+			//エネミー生成タイム
 			m_enemyPopTime = 0;
+			//エネミー生成速度
 			m_PopSpeed = 100;
+			//遷移
 			CFade::SetFade(MODE_OPERATION);
 		}
 		break;
@@ -146,62 +147,54 @@ void CManager::Update(void)
 	case MODE_OPERATION:
 		if (m_pInputMouse->GetMouseTriggerLeft())
 		{
+			//遷移
 			CFade::SetFade(MODE_GAME);
 		}
 		break;
 
 	case MODE_GAME:
-		m_enemyPopTime++;	
-		if (m_PopSpeed <= 0)
+		//エネミー生成タイム
+		m_enemyPopTime++;
+		//エネミー生成タイミング以外ブレイク
+		if (m_enemyPopTime%m_PopSpeed != 0)break;
+
+		//乱数初期化
+		srand((unsigned)time(NULL));
+		//エネミーの生成
+		for (int nCount = 0; nCount < ENEMY_CONCURRENT; nCount++)
 		{
-			CFade::SetFade(MODE_RESULT);
-		}
-		if (m_enemyPopTime%m_PopSpeed == 0)
-		{
-			////生成速度アップ
-			//if (m_enemyPopTime % 100 == 0)m_PopSpeed -= 10;
-			srand((unsigned)time(NULL));
-			//エネミーの生成
-			for (int nCount = 0; nCount < ENEMY_CONCURRENT; nCount++)
+			//方向乱数
+			int nDirection = rand() % DIRECTION_MAX;
+			//X軸、Y軸に乱数
+			nPosX = rand() % SCREEN_WIDTH;
+			nPosY = rand() % SCREEN_HEIGHT;
+			//エネミー生成
+			switch (nDirection)
 			{
-				int nDirection = rand() % DIRECTION_MAX;
-
-				switch (nDirection)
-				{
-				case DIRECTION_UP:
-					nPosX = rand() % SCREEN_WIDTH;
-					CEnemy::Create((float)nPosX, 10.f);
-					break;
-				case DIRECTION_DOWN:
-					nPosX = rand() % SCREEN_WIDTH;
-					CEnemy::Create((float)nPosX, (float)SCREEN_HEIGHT - 15.f);
-					break;
-				case DIRECTION_LEFT:
-					nPosY = rand() % SCREEN_HEIGHT;
-					CEnemy::Create(10.f, (float)nPosY);
-					break;
-				case DIRECTION_RIGHT:
-					nPosY = rand() % SCREEN_WIDTH;
-					CEnemy::Create((float)SCREEN_WIDTH - 15.f, (float)nPosY);
-					break;
-				default:
-					break;
-				}
+			case DIRECTION_UP://上
+				CEnemy::Create((float)nPosX, 10.f);
+				break;
+			case DIRECTION_DOWN://下
+				CEnemy::Create((float)nPosX, (float)SCREEN_HEIGHT - 15.f);
+				break;
+			case DIRECTION_LEFT://左
+				CEnemy::Create(10.f, (float)nPosY);
+				break;
+			case DIRECTION_RIGHT://右
+				CEnemy::Create((float)SCREEN_WIDTH - 15.f, (float)nPosY);
+				break;
 			}
-
 		}
 		break;
 
 	case MODE_RESULT:
 		if (m_pInputMouse->GetMouseTriggerLeft())
 		{
+			//遷移
 			CFade::SetFade(MODE_TITLE);
 		}
 		break;
-	default:
-		break;
 	}
-
 }
 //=============================================================================
 // 描画処理
@@ -270,82 +263,107 @@ void CManager::SetMode(MODE mode)
 	switch (m_mode)
 	{
 	case MODE_TITLE:
+		//リザルト終了処理
 		if (m_pResult != NULL)
 		{
 			m_pResult->Uninit();
 			delete m_pResult;
 			m_pResult = NULL;
 		}
+		//スコア終了処理
 		if (m_pScore != NULL)
 		{
 			m_pScore->Uninit();
 		}
+		//ハイスコア終了処理
+		if (m_pHiscore != NULL)
+		{
+			m_pHiscore->Uninit();
+		}
+		//タイトル生成
 		m_pTitle = CTitle::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+		//遷移用文字生成
 		m_pTransition = CTransition::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+		//サウンド再生
 		m_pSound->Play(CSound::BGM_TITLE);
 		break;
 
-	case MODE_OPERATION:	
+	case MODE_OPERATION:
+		//タイトル終了処理
 		if (m_pTitle != NULL)
 		{
 			m_pTitle->Uninit();
 			delete m_pTitle;
 			m_pTitle = NULL;
 		}
+		//説明生成
 		m_pOperation = COperation::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 		break;
 
 	case MODE_GAME:
+		//説明終了処理
 		if (m_pOperation != NULL)
 		{
 			m_pOperation->Uninit();
 			delete m_pOperation;
 			m_pOperation = NULL;
 		}
+		//遷移用文字終了
 		if (m_pTransition != NULL)
 		{
 			m_pTransition->Uninit();
 			delete m_pTransition;
 			m_pTransition = NULL;
 		}
+		//サウンド停止
 		if (m_pSound != NULL)
 		{
 			m_pSound->Stop(CSound::BGM_TITLE);
 		}
+		//サウンド再生
 		m_pSound->Play(CSound::BGM_MAIN);
-		//カーソルを非表示
+		//カーソル非表示
 		ShowCursor(false);
-		//2Dポリゴンの生成
+		//背景生成
 		CBg::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+		//ボム表示生成
 		CBomb::Create(BOMB_WIDTH/2, BOMB_HEIGHT/2);
+		//プレイヤー生成
 		m_pPlayer = CPlayer::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+		//フェンス生成
 		CFence::Create(SCREEN_CENTER_X - 125, SCREEN_CENTER_Y, 0);
 		CFence::Create(SCREEN_CENTER_X + 125, SCREEN_CENTER_Y, 0);
 		CFence::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y - 125, 1);
 		CFence::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y + 125, 1);
+		//レティクル生成
 		CReticule::Create(0, 0);
+		//スコア生成
 		m_pScore=CScore::Create(SCREEN_WIDTH - SCORE_WIDTH, SCORE_HEIGHT,SCORE_WIDTH,SCORE_HEIGHT);
 		break;
 
 	case MODE_RESULT:
+		//サウンド停止
 		if (m_pSound != NULL)
 		{
 			m_pSound->Stop();
 		}
+		//サウンド再生
 		m_pSound->Play(CSound::SE_RESULT);
-		//カーソルを表示
+		//カーソル表示
 		ShowCursor(true);
 		//スコアセーブ
 		m_saveScore = m_pScore->SaveScore();
 		CScene::ReleaseAll();
+		//リザルト生成
 		m_pResult = CResult::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
-		//スコアのクリエイト
+		//スコア生成
 		m_pScore=CScore::Create(SCREEN_CENTER_X+SCORE_WIDTH*7, SCREEN_CENTER_Y, SCORE_WIDTH*3, SCORE_HEIGHT*3);
 		//セーブしたスコアをセット
 		m_pScore->SetScore(m_saveScore);
-		break;
-
-	default:
+		//ハイスコア生成
+		m_pHiscore = CHiscore::Create(SCREEN_CENTER_X + SCORE_WIDTH * 7,125, SCORE_WIDTH * 3, SCORE_HEIGHT * 3);
+		//ハイスコアとスコアを比べる
+		m_pHiscore->compareHiScore(m_saveScore);
 		break;
 	}
 }
@@ -365,14 +383,6 @@ CManager::MODE CManager::GetMode(void)
 CRenderer *CManager::GetRenderer(void)
 {
 	return m_pRenderer;	
-}
-
-//=============================================================================
-//キーボードの受け取り
-//=============================================================================
-CInputKeyboard *CManager::GetInputKeyboard(void)
-{
-	return m_pInputKeyboard;
 }
 
 //=============================================================================

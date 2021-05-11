@@ -24,10 +24,10 @@ LPDIRECT3DTEXTURE9 CBullet::m_pTexture = NULL;
 //=============================================================================
 CBullet::CBullet(int nPriority)
 {
-	m_move = 5.f;
+	m_fMove = 5.f;
 	m_angleX =0.f;
 	m_angleY = 0.f;
-	m_hit = false;
+	m_bHit = false;
 }
 
 //=============================================================================
@@ -66,7 +66,6 @@ CBullet *CBullet::Create(float nPosX, float nPosY)
 HRESULT CBullet::Load(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;
-
 	pDevice = CManager::GetRenderer()->GetDevice();
 
 	// テクスチャの生成
@@ -116,47 +115,48 @@ void CBullet::Uninit(void)
 //=============================================================================
 void CBullet::Update(void)
 {
+	//位置の取得
 	D3DXVECTOR3 pos = GetPosition();
-	pos.x += m_angleX*m_move;
-	pos.y += m_angleY*m_move;
-
+	//進行方向の計算
+	pos.x += m_angleX*m_fMove;
+	pos.y += m_angleY*m_fMove;
+	//位置のセット
 	SetPosition(pos);
 	CScene2D::Update();
+
 	for (int nCountpriority = 0; nCountpriority < PRIORITY; nCountpriority++)
 	{
 		for (int nCntScene = 0; nCntScene < MAX_POLYGON; nCntScene++)
 		{
-			CScene2D *pScene2D = (CScene2D*)GetScene(nCountpriority,nCntScene);
-			if (pScene2D != NULL)
+			//Scene2Dを取得
+			CScene2D *pScene2D = (CScene2D*)GetScene(nCountpriority, nCntScene);
+			//pScene2DがNULLならばコンティニュー
+			if (pScene2D == NULL)continue;
+			//OBJTYPEがエネミー以外ならばコンティニュー
+			if (pScene2D->GetObjType() != CEnemy::OBJTYPE_ENEMY)continue;
+			//エネミーの位置取得
+			D3DXVECTOR3 posEnemy = pScene2D->GetPosition();
+			//エネミーに当たった処理
+			if (pos.x >= posEnemy.x - (ENEMY_WIDTH / 2) && pos.x <= posEnemy.x + (ENEMY_WIDTH / 2) &&
+				pos.y >= posEnemy.y - (ENEMY_HEIGHT / 2) && pos.y <= posEnemy.y + (ENEMY_HEIGHT / 2))
 			{
-				//エネミーの位置取得
-				D3DXVECTOR3 posEnemy = pScene2D->GetPosition();
-				if (pScene2D->GetObjType() == CEnemy::OBJTYPE_ENEMY)
-				{
-					//エネミーに当たった処理
-					if (pos.x >= posEnemy.x - (ENEMY_WIDTH / 2) && pos.x <= posEnemy.x + (ENEMY_WIDTH / 2) &&
-						pos.y >= posEnemy.y - (ENEMY_HEIGHT / 2) && pos.y <= posEnemy.y + (ENEMY_HEIGHT / 2))
-					{
-						((CEnemy*)(pScene2D))->HitBullet();
-						CExplosion::Create(pos.x, pos.y);
-						m_hit = true;
-					}
-				}
+				//エネミーのヒット処理
+				((CEnemy*)(pScene2D))->HitBullet();
+				//爆破エフェクト生成
+				CExplosion::Create(pos.x, pos.y);
+				//ヒットフラグ
+				m_bHit = true;
 			}
+			//弾が画面外に出たときもヒットフラグを立てる
+			else if (pos.x<-5 || pos.x>SCREEN_WIDTH + 5 || pos.y<-5 || pos.y>SCREEN_HEIGHT + 5)m_bHit = true;
 		}
 	}
-	//弾が画面外に出たとき
-	if (pos.x<-5 || pos.x>SCREEN_WIDTH + 5 ||
-		pos.y<-5 || pos.y>SCREEN_HEIGHT + 5)
-	{
-		m_hit = true;
-	}
-	//弾が敵に当たる、画面外に出ると
-	if (m_hit == true)
-	{	
-		m_hit = false;
-		CScene2D::Uninit();
-	}
+	//弾が敵に当たる、画面外に出るとreturn
+	if (m_bHit != true)return;
+	//ヒットフラグリセット
+	m_bHit = false;
+	//終了処理
+	CScene2D::Uninit();
 }
 
 //=============================================================================

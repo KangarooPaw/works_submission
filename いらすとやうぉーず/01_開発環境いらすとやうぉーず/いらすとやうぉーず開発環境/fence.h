@@ -14,26 +14,29 @@
 //--------------------------
 class CManager;
 
+//--------------------------
+//クラス
+//--------------------------
 class CFence :public CScene2D
 {
 public:
-	CFence(int nPriority = 2);
-	~CFence();
+	CFence(int nPriority = 2);	//コンストラクタ
+	~CFence();						//デストラクタ
 
-	static CFence*Create(float nPosX, float nPosY,int type);
+	static CFence*Create(float nPosX, float nPosY,int type);//生成処理
 
-	static HRESULT Load(void);
-	static void Unload(void);
+	static HRESULT Load(void);					//テクスチャの読み込み
+	static void Unload(void);						//テクスチャの破棄
 
-	HRESULT Init(float nPosX, float nPosY);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init(float nPosX, float nPosY);		//初期化処理
+	void Uninit(void);									//終了処理
+	void Update(void);									//更新処理
+	void Draw(void);									//描画処理
 private:
-	static LPDIRECT3DTEXTURE9 m_pTexture[2];
-	static int				m_fanceCnt;
-	bool m_Deathflag;
-	int m_type;
-	int m_Life;
+	static LPDIRECT3DTEXTURE9 m_pTexture[2];	//テクスチャのポインタ
+	static int	 m_fanceCnt;							//フェンスカウント
+	bool m_Deathflag;									//死亡フラグ
+	int m_type;											//タイプ情報
+	int m_Life;											//体力情報
 };
 #endif // !_FENCE_H_

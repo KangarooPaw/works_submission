@@ -15,25 +15,29 @@
 //--------------------------
 class CNumber;
 
+//--------------------------
+//クラス
+//--------------------------
 class CScore:public CScene
 {
 public:
-	CScore(int nPriority = 5);
-	~CScore();
-	static CScore *Create(float nPosX, float nPosY, int nPolygonWidth, int nPolygonHeight);
+	CScore(int nPriority = 5);//コンストラクタ
+	~CScore();//デストラクタ
 
-	HRESULT Init(float nPosX, float nPosY,int nPolygonWidth, int nPolygonHeight);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	static CScore *Create(float nPosX, float nPosY, int nPolygonWidth, int nPolygonHeight);//生成処理
 
-	void SetScore(int nScore);
-	void AddScore(int nValue);
+	HRESULT Init(float nPosX, float nPosY,int nPolygonWidth, int nPolygonHeight);//初期化処理
+	void Uninit(void);//終了処理
+	void Update(void);//更新処理
+	void Draw(void);//描画処理
 
-	int GetScore(void);
-	int SaveScore(void);
+	void SetScore(int nScore);//スコアのセット
+	void AddScore(int nValue);//スコアの加算
+
+	int GetScore(void);//スコアの取得
+	int SaveScore(void);//スコアのセーブ
 private:
-	CNumber *m_apNumber[MAX_NUMBER];
-	int m_nScore;
+	CNumber *m_apNumber[MAX_NUMBER];//数字のポインタ
+	int m_nScore;//スコアの情報
 };
 #endif // !_SCORE_H_
