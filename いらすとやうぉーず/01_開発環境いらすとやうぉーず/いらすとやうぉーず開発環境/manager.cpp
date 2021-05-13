@@ -28,6 +28,7 @@
 #include "operation.h"
 #include "bomb.h"
 #include "reticule.h"
+#include "game.h"
 
 //=============================================================================
 //スタティック変数初期化
@@ -44,6 +45,7 @@ CFade *CManager::m_pFade = NULL;
 COperation *CManager::m_pOperation=NULL;
 CScore*CManager::m_pScore = NULL;
 CHiscore*CManager::m_pHiscore = NULL;
+CGame*CManager::m_pGame = NULL;
 int CManager::m_saveScore = 0;
 
 //=============================================================================
@@ -51,10 +53,6 @@ int CManager::m_saveScore = 0;
 //=============================================================================
 CManager::CManager()
 {
-	m_enemyPopTime = 0;
-	m_PopSpeed = 100;
-	nPosX = 0;
-	nPosY = 0;
 
 }
 
@@ -135,10 +133,6 @@ void CManager::Update(void)
 	case MODE_TITLE:
 		if (m_pInputMouse->GetMouseTriggerLeft())
 		{
-			//エネミー生成タイム
-			m_enemyPopTime = 0;
-			//エネミー生成速度
-			m_PopSpeed = 100;
 			//遷移
 			CFade::SetFade(MODE_OPERATION);
 		}
@@ -153,38 +147,7 @@ void CManager::Update(void)
 		break;
 
 	case MODE_GAME:
-		//エネミー生成タイム
-		m_enemyPopTime++;
-		//エネミー生成タイミング以外ブレイク
-		if (m_enemyPopTime%m_PopSpeed != 0)break;
-
-		//乱数初期化
-		srand((unsigned)time(NULL));
-		//エネミーの生成
-		for (int nCount = 0; nCount < ENEMY_CONCURRENT; nCount++)
-		{
-			//方向乱数
-			int nDirection = rand() % DIRECTION_MAX;
-			//X軸、Y軸に乱数
-			nPosX = rand() % SCREEN_WIDTH;
-			nPosY = rand() % SCREEN_HEIGHT;
-			//エネミー生成
-			switch (nDirection)
-			{
-			case DIRECTION_UP://上
-				CEnemy::Create((float)nPosX, 10.f);
-				break;
-			case DIRECTION_DOWN://下
-				CEnemy::Create((float)nPosX, (float)SCREEN_HEIGHT - 15.f);
-				break;
-			case DIRECTION_LEFT://左
-				CEnemy::Create(10.f, (float)nPosY);
-				break;
-			case DIRECTION_RIGHT://右
-				CEnemy::Create((float)SCREEN_WIDTH - 15.f, (float)nPosY);
-				break;
-			}
-		}
+		if(m_pGame!=NULL)m_pGame->Update();
 		break;
 
 	case MODE_RESULT:
@@ -320,28 +283,25 @@ void CManager::SetMode(MODE mode)
 		{
 			m_pSound->Stop(CSound::BGM_TITLE);
 		}
+		//ゲームクラス生成
+		if (m_pGame == NULL)
+		{
+			m_pGame = new CGame;
+			m_pGame->Init();
+		}
 		//サウンド再生
 		m_pSound->Play(CSound::BGM_MAIN);
-		//カーソル非表示
-		ShowCursor(false);
-		//背景生成
-		CBg::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
-		//ボム表示生成
-		CBomb::Create(BOMB_WIDTH/2, BOMB_HEIGHT/2);
-		//プレイヤー生成
-		m_pPlayer = CPlayer::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
-		//フェンス生成
-		CFence::Create(SCREEN_CENTER_X - 125, SCREEN_CENTER_Y, 0);
-		CFence::Create(SCREEN_CENTER_X + 125, SCREEN_CENTER_Y, 0);
-		CFence::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y - 125, 1);
-		CFence::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y + 125, 1);
-		//レティクル生成
-		CReticule::Create(0, 0);
 		//スコア生成
 		m_pScore=CScore::Create(SCREEN_WIDTH - SCORE_WIDTH, SCORE_HEIGHT,SCORE_WIDTH,SCORE_HEIGHT);
 		break;
 
 	case MODE_RESULT:
+		//ゲームの終了
+		if (m_pGame != NULL)
+		{
+			delete m_pGame;
+			m_pGame = NULL;
+		}
 		//サウンド停止
 		if (m_pSound != NULL)
 		{
@@ -349,11 +309,12 @@ void CManager::SetMode(MODE mode)
 		}
 		//サウンド再生
 		m_pSound->Play(CSound::SE_RESULT);
-		//カーソル表示
-		ShowCursor(true);
 		//スコアセーブ
 		m_saveScore = m_pScore->SaveScore();
-		CScene::ReleaseAll();
+		//リリース
+		CScene::ReleaseAll();	
+		//カーソル表示
+		ShowCursor(true);
 		//リザルト生成
 		m_pResult = CResult::Create(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 		//スコア生成

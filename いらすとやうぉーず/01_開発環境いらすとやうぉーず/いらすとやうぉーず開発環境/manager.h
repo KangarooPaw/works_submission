@@ -23,6 +23,7 @@ class CFade;
 class COperation;
 class CScore;
 class CHiscore;
+class CGame;
 
 //--------------------------
 //クラス
@@ -84,11 +85,8 @@ private:
 	static CScore *m_pScore;//スコア
 	static CHiscore *m_pHiscore;//ハイスコア
 	static CSound *m_pSound;//サウンド
+	static CGame *m_pGame;//ゲームメイン
 
-	int m_enemyPopTime;//エネミー生成タイミング
-	int m_PopSpeed;//エネミー生成速度
 	static int m_saveScore;//スコア情報のセーブ
-
-	int nPosX,nPosY;//エネミー生成時の座標
 };	
 #endif // !_MANAGER_H_
