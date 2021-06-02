@@ -14,6 +14,7 @@
 //前方宣言
 //--------------------------
 class CNumber;
+class CScene2D;
 
 //--------------------------
 //クラス
@@ -23,6 +24,9 @@ class CHiscore :public CScene
 public:
 	CHiscore(int nPriority = 5);	//コンストラクタ
 	~CHiscore();						//デストラクタ
+
+	static HRESULT Load(void);					//テクスチャの読み込み
+	static void Unload(void);						// テクスチャの破棄
 
 	static CHiscore *Create(float nPosX, float nPosY, int nPolygonWidth, int nPolygonHeight);//生成処理
 
@@ -39,6 +43,9 @@ public:
 	void compareHiScore(int nScore);//スコアとハイスコアを比べる
 
 private:
+	static LPDIRECT3DTEXTURE9 m_pTexture;		//テクスチャのポインタ
+	CScene2D *m_pScene2D;		//シーンのポインタ
+
 	CNumber *m_apNumber[MAX_NUMBER];//数字のポインタ
 	int m_nHiScore;								//ハイスコア情報
 
